@@ -1,0 +1,56 @@
+```
+# Build artifacts
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.so
+*.dylib
+*.jar
+*.war
+*.class
+
+# Dependencies
+node_modules/
+packages/
+
+# Logs
+*.log
+
+# Environment specific
+.env
+.env.local
+.env.*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+coverage/
+htmlcov/
+*.coverage
+
+# Distribution / packaging
+dist/
+build/
+*.tar.gz
+*.zip
+
+# ASP.NET Core
+**/Properties/PublishProfiles/
+*.user
+*.userosscache
+*.sln.docstates
+
+# Mini Program
+SimpleBookkeeping/MiniProgram/.swan/
+SimpleBookkeeping/MiniProgram/.vuepress/
+```

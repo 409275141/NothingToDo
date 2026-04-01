@@ -1,0 +1,36 @@
+<view class="container">
+  <view class="summary-card">
+    <view class="summary-title">本月结余</view>
+    <view class="summary-amount">¥{{balance}}</view>
+    <view class="summary-row">
+      <view class="summary-item">
+        <view class="summary-label">收入</view>
+        <view class="summary-value">¥{{totalIncome}}</view>
+      </view>
+      <view class="summary-item">
+        <view class="summary-label">支出</view>
+        <view class="summary-value">¥{{totalExpense}}</view>
+      </view>
+      <view class="summary-item">
+        <view class="summary-label">赊账未收</view>
+        <view class="summary-value">¥{{outstanding}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="quick-actions>
+    <view class="action-btn" bindtap="goToAddTransaction">
+      <view class="action-icon">💰</view>
+      <view class="action-text">记一笔</view>
+    </view>
+    <view class="action-btn" bindtap="goToAddCredit">
+      <view class="action-icon">📝</view>
+      <view class="action-text">记赊账</view>
+    </view>
+  </view>
+
+  <view class="credit-alert" wx:if="{{unpaidCount > 0}}">
+    <view class="credit-alert-title">⚠️ 有{{unpaidCount}}笔赊账未收回</view>
+    <view class="credit-alert-info">及时催款，避免坏账</view>
+  </view>
+</view>

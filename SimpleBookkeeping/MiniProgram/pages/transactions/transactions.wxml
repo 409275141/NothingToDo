@@ -1,0 +1,64 @@
+<view class="container">
+  <view class="tabs">
+    <view class="tab {{currentTab === 'list' ? 'active' : ''}}" bindtap="switchTab" data-tab="list">明细</view>
+    <view class="tab {{currentTab === 'add' ? 'active' : ''}}" bindtap="switchTab" data-tab="add">记账</view>
+  </view>
+
+  <!-- 列表页面 -->
+  <view class="content" wx:if="{{currentTab === 'list'}}">
+    <view class="transaction-list">
+      <view class="transaction-item" wx:for="{{transactions}}" wx:key="id">
+        <view class="transaction-left">
+          <view class="transaction-category">{{item.category}}</view>
+          <view class="transaction-date">{{item.date}}</view>
+        </view>
+        <view class="transaction-right">
+          <view class="transaction-amount {{item.type === 'income' ? 'income' : 'expense'}}">
+            {{item.type === 'income' ? '+' : '-'}}¥{{item.amount}}
+          </view>
+          <view class="transaction-desc">{{item.description}}</view>
+        </view>
+      </view>
+    </view>
+    <view class="empty-tip" wx:if="{{transactions.length === 0}}">
+      暂无记录，快去记一笔吧~
+    </view>
+  </view>
+
+  <!-- 添加页面 -->
+  <view class="content" wx:if="{{currentTab === 'add'}}">
+    <view class="form-group">
+      <view class="form-label">类型</view>
+      <view class="type-selector">
+        <view class="type-btn {{formData.type === 'expense' ? 'active expense' : ''}}" bindtap="selectType" data-type="expense">支出</view>
+        <view class="type-btn {{formData.type === 'income' ? 'active income' : ''}}" bindtap="selectType" data-type="income">收入</view>
+      </view>
+    </view>
+
+    <view class="form-group">
+      <view class="form-label">金额</view>
+      <input class="form-input" type="digit" placeholder="请输入金额" value="{{formData.amount}}" bindinput="onAmountInput"/>
+    </view>
+
+    <view class="form-group">
+      <view class="form-label">分类</view>
+      <picker range="{{categories}}" value="{{categoryIndex}}" bindchange="onCategoryChange">
+        <view class="form-picker">{{categories[categoryIndex]}}</view>
+      </picker>
+    </view>
+
+    <view class="form-group">
+      <view class="form-label">备注</view>
+      <input class="form-input" placeholder="可选" value="{{formData.description}}" bindinput="onDescInput"/>
+    </view>
+
+    <view class="form-group">
+      <view class="form-label">日期</view>
+      <picker mode="date" value="{{formData.date}}" bindchange="onDateChange">
+        <view class="form-picker">{{formData.date}}</view>
+      </picker>
+    </view>
+
+    <button class="submit-btn" bindtap="submitTransaction">保存</button>
+  </view>
+</view>
