@@ -49,7 +49,52 @@ SimpleBookkeeping/
 
 ## 快速开始
 
-### 后端启动
+### 方式一：Docker 部署（推荐）
+
+#### 使用 docker-compose（推荐）
+
+```bash
+cd SimpleBookkeeping
+docker-compose up -d
+```
+
+#### 或使用 docker 命令
+
+```bash
+cd SimpleBookkeeping
+docker build -t bookkeeping-api .
+docker run -d \
+  --name bookkeeping-api \
+  -p 8080:8080 \
+  -p 8081:8081 \
+  -v bookkeeping_data:/app/data \
+  -e ASPNETCORE_ENVIRONMENT=Production \
+  bookkeeping-api
+```
+
+访问 Swagger: http://localhost:8080/swagger
+
+**数据持久化**: SQLite 数据库文件保存在 Docker volume `bookkeeping_data` 中，容器重启不会丢失数据。
+
+#### Docker 常用命令
+
+```bash
+# 查看日志
+docker-compose logs -f
+
+# 停止服务
+docker-compose down
+
+# 重启服务
+docker-compose restart
+
+# ⚠️ 删除服务和数据（谨慎使用）
+docker-compose down -v
+```
+
+### 方式二：本地运行
+
+#### 后端启动
 
 ```bash
 cd SimpleBookkeeping/Api
@@ -104,8 +149,8 @@ dotnet run --urls="http://localhost:5000"
 
 - **后端**: .NET 8 WebAPI
 - **前端**: 微信小程序原生开发
-- **数据存储**: SQLite 数据库
-- **部署**: Docker + Linux/Windows Server
+- **数据存储**: SQLite 数据库（Docker volume 持久化）
+- **部署**: Docker + docker-compose
 
 ## 商业模式
 
@@ -115,8 +160,10 @@ dotnet run --urls="http://localhost:5000"
 
 ## 注意事项
 
-ℹ️ **数据已持久化**: 使用 SQLite 数据库存储，数据保存在 `bookkeeping.db` 文件中，重启服务不会丢失数据。
+ℹ️ **数据已持久化**: 使用 SQLite 数据库存储，Docker 部署时数据保存在 Docker volume `bookkeeping_data` 中，本地运行时保存在 `bookkeeping.db` 文件中，重启服务不会丢失数据。
 
 ⚠️ **小程序域名配置**: 正式发布需要在微信公众平台配置合法域名。
 
 ⚠️ **AppID**: 请将 `project.config.json` 中的 `appid` 替换为你自己的小程序 AppID。
+
+⚠️ **HTTPS**: 生产环境建议使用 HTTPS，docker-compose 已配置 8081 端口用于 HTTPS。
