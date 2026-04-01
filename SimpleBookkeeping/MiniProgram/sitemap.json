@@ -1,0 +1,6 @@
+{
+  "rules": {
+    "allow": ["*"],
+    "disallow": []
+  }
+}

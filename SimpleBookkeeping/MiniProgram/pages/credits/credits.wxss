@@ -1,0 +1,171 @@
+page {
+  background-color: #f5f5f5;
+}
+
+.container {
+  min-height: 100vh;
+}
+
+.tabs {
+  display: flex;
+  background: white;
+  border-bottom: 1rpx solid #eee;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 30rpx;
+  font-size: 28rpx;
+  color: #666;
+}
+
+.tab.active {
+  color: #07c160;
+  border-bottom: 4rpx solid #07c160;
+  font-weight: bold;
+}
+
+.content {
+  padding: 20rpx;
+}
+
+.credit-list {
+  background: white;
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.credit-item {
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.credit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.credit-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.credit-phone {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.credit-status {
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  font-size: 24rpx;
+}
+
+.status-unpaid {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-partial {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.status-paid {
+  background: #d4edda;
+  color: #155724;
+}
+
+.credit-body {
+  margin-bottom: 20rpx;
+}
+
+.credit-amounts {
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.credit-total {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: bold;
+}
+
+.credit-paid {
+  font-size: 26rpx;
+  color: #07c160;
+}
+
+.credit-remaining {
+  font-size: 26rpx;
+  color: #ff4d4f;
+}
+
+.credit-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.credit-date {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.credit-actions {
+  display: flex;
+  gap: 10rpx;
+}
+
+.action-btn-small {
+  background: #07c160;
+  color: white;
+  font-size: 24rpx;
+  padding: 10rpx 30rpx;
+  border-radius: 8rpx;
+  border: none;
+}
+
+.empty-tip {
+  text-align: center;
+  padding: 100rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+.form-group {
+  background: white;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  border-radius: 16rpx;
+}
+
+.form-label {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 20rpx;
+  font-weight: bold;
+}
+
+.form-input,
+.form-picker {
+  background: #f5f5f5;
+  padding: 24rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+}
+
+.submit-btn {
+  background: #07c160;
+  color: white;
+  border: none;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  font-size: 32rpx;
+  margin-top: 40rpx;
+}

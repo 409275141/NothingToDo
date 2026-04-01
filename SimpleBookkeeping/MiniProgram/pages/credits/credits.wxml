@@ -1,0 +1,76 @@
+<view class="container">
+  <view class="tabs">
+    <view class="tab {{currentTab === 'list' ? 'active' : ''}}" bindtap="switchTab" data-tab="list">赊账明细</view>
+    <view class="tab {{currentTab === 'add' ? 'active' : ''}}" bindtap="switchTab" data-tab="add">记赊账</view>
+  </view>
+
+  <!-- 列表页面 -->
+  <view class="content" wx:if="{{currentTab === 'list'}}">
+    <view class="credit-list">
+      <view class="credit-item" wx:for="{{credits}}" wx:key="id">
+        <view class="credit-header">
+          <view class="credit-name">{{item.customerName}}</view>
+          <view class="credit-phone">{{item.customerPhone}}</view>
+          <view class="credit-status status-{{item.status}}">
+            {{item.status === 'unpaid' ? '未付款' : (item.status === 'partial' ? '部分付款' : '已结清')}}
+          </view>
+        </view>
+        <view class="credit-body">
+          <view class="credit-amounts">
+            <text class="credit-total">总额：¥{{item.amount}}</text>
+            <text class="credit-paid">已付：¥{{item.paidAmount}}</text>
+            <text class="credit-remaining">待收：¥{{item.amount - item.paidAmount}}</text>
+          </view>
+        </view>
+        <view class="credit-footer">
+          <view class="credit-date">{{item.date}}</view>
+          <view class="credit-actions" wx:if="{{item.status !== 'paid'}}">
+            <button class="action-btn-small" bindtap="recordPayment" data-id="{{item.id}}">收款</button>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="empty-tip" wx:if="{{credits.length === 0}}">
+      暂无赊账记录~
+    </view>
+  </view>
+
+  <!-- 添加页面 -->
+  <view class="content" wx:if="{{currentTab === 'add'}}">
+    <view class="form-group">
+      <view class="form-label">客户姓名</view>
+      <input class="form-input" placeholder="请输入客户姓名" value="{{formData.customerName}}" bindinput="onNameInput"/>
+    </view>
+
+    <view class="form-group">
+      <view class="form-label">联系电话</view>
+      <input class="form-input" type="number" placeholder="请输入联系电话" value="{{formData.customerPhone}}" bindinput="onPhoneInput"/>
+    </view>
+
+    <view class="form-group">
+      <view class="form-label">赊账金额</view>
+      <input class="form-input" type="digit" placeholder="请输入金额" value="{{formData.amount}}" bindinput="onAmountInput"/>
+    </view>
+
+    <view class="form-group">
+      <view class="form-label">备注说明</view>
+      <input class="form-input" placeholder="商品/服务说明" value="{{formData.description}}" bindinput="onDescInput"/>
+    </view>
+
+    <view class="form-group">
+      <view class="form-label">日期</view>
+      <picker mode="date" value="{{formData.date}}" bindchange="onDateChange">
+        <view class="form-picker">{{formData.date}}</view>
+      </picker>
+    </view>
+
+    <view class="form-group">
+      <view class="form-label">预计还款日期</view>
+      <picker mode="date" value="{{formData.dueDate}}" bindchange="onDueDateChange">
+        <view class="form-picker">{{formData.dueDate}}</view>
+      </picker>
+    </view>
+
+    <button class="submit-btn" bindtap="submitCredit">保存</button>
+  </view>
+</view>
