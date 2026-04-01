@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SimpleBookkeeping.Api.Data;
 using SimpleBookkeeping.Api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace SimpleBookkeeping.Api.Controllers;
 
@@ -8,9 +9,9 @@ namespace SimpleBookkeeping.Api.Controllers;
 [Route("api/[controller]")]
 public class CreditsController : ControllerBase
 {
-    private readonly InMemoryDbContext _context;
+    private readonly SqliteDbContext _context;
 
-    public CreditsController(InMemoryDbContext context)
+    public CreditsController(SqliteDbContext context)
     {
         _context = context;
     }
@@ -18,7 +19,10 @@ public class CreditsController : ControllerBase
     [HttpGet]
     public IActionResult GetCredits([FromQuery] string userId = "demo")
     {
-        var credits = _context.GetCredits(userId);
+        var credits = _context.Credits
+            .Where(c => c.UserId == userId)
+            .OrderByDescending(c => c.Date)
+            .ToList();
         return Ok(credits);
     }
 
@@ -35,17 +39,28 @@ public class CreditsController : ControllerBase
             credit.PaidAmount = 0;
         }
         
-        var created = _context.AddCredit(credit);
-        return CreatedAtAction(nameof(GetCredits), new { id = created.Id }, created);
+        _context.Credits.Add(credit);
+        _context.SaveChanges();
+        return CreatedAtAction(nameof(GetCredits), new { id = credit.Id }, credit);
     }
 
     [HttpPost("{id}/payment")]
     public IActionResult RecordPayment(int id, [FromQuery] string userId = "demo", [FromBody] PaymentRequest request)
     {
-        var updated = _context.UpdateCreditPayment(id, userId, request.Amount);
-        if (updated != null)
+        var credit = _context.Credits.Find(id);
+        if (credit != null && credit.UserId == userId)
         {
-            return Ok(updated);
+            credit.PaidAmount += request.Amount;
+            if (credit.PaidAmount >= credit.Amount)
+            {
+                credit.Status = "paid";
+            }
+            else if (credit.PaidAmount > 0)
+            {
+                credit.Status = "partial";
+            }
+            _context.SaveChanges();
+            return Ok(credit);
         }
         return NotFound();
     }
@@ -53,8 +68,11 @@ public class CreditsController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult DeleteCredit(int id, [FromQuery] string userId = "demo")
     {
-        if (_context.DeleteCredit(id, userId))
+        var credit = _context.Credits.Find(id);
+        if (credit != null && credit.UserId == userId)
         {
+            _context.Credits.Remove(credit);
+            _context.SaveChanges();
             return NoContent();
         }
         return NotFound();
@@ -63,7 +81,9 @@ public class CreditsController : ControllerBase
     [HttpGet("summary")]
     public IActionResult GetSummary([FromQuery] string userId = "demo")
     {
-        var credits = _context.GetCredits(userId);
+        var credits = _context.Credits
+            .Where(c => c.UserId == userId)
+            .ToList();
         var totalAmount = credits.Sum(c => c.Amount);
         var totalPaid = credits.Sum(c => c.PaidAmount);
         var unpaidCount = credits.Count(c => c.Status == "unpaid");

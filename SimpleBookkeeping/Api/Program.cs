@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using SimpleBookkeeping.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Configure SQLite database
+builder.Services.AddDbContext<SqliteDbContext>(options =>
+    options.UseSqlite("Data Source=bookkeeping.db"));
 
 // CORS 配置，允许小程序调用
 builder.Services.AddCors(options =>
