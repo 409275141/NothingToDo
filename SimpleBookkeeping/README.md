@@ -1,4 +1,4 @@
-# 简易记账本 - MVP版本
+# 简易记账本
 
 这是一个面向小微商贩/社区团购团长的简易记账和赊账管理小程序，使用 .NET 8 + 微信小程序开发。
 
@@ -11,7 +11,7 @@ SimpleBookkeeping/
 │   │   ├── TransactionsController.cs   # 账本接口
 │   │   └── CreditsController.cs        # 赊账接口
 │   ├── Data/                     # 数据访问层
-│   │   └── InMemoryDbContext.cs  # 内存数据库（MVP用）
+│   │   └── SqliteDbContext.cs    # SQLite 数据库上下文
 │   ├── Models/                   # 数据模型
 │   │   └── Transaction.cs        # 交易和赊账模型
 │   ├── Program.cs                # 程序入口
@@ -82,8 +82,8 @@ dotnet run --urls="http://localhost:5000"
 
 ## 后续优化建议
 
-### 短期（MVP验证后）
-1. **数据持久化**: 将内存存储替换为 SQLite/SQL Server
+### 短期（已完成）
+1. **数据持久化**: ✅ 已实现 SQLite 数据库存储，数据持久化到 `bookkeeping.db`
 2. **用户系统**: 添加微信登录，实现多用户隔离
 3. **数据导出**: 支持 Excel 导出，方便对账
 4. **催款海报**: 生成赊账催款图片，方便分享
@@ -104,7 +104,7 @@ dotnet run --urls="http://localhost:5000"
 
 - **后端**: .NET 8 WebAPI
 - **前端**: 微信小程序原生开发
-- **数据存储**: 内存（MVP）→ SQLite/SQL Server（生产）
+- **数据存储**: SQLite 数据库
 - **部署**: Docker + Linux/Windows Server
 
 ## 商业模式
@@ -115,7 +115,7 @@ dotnet run --urls="http://localhost:5000"
 
 ## 注意事项
 
-⚠️ **当前是MVP版本**，使用内存存储，重启服务后数据会丢失。正式使用前请替换为持久化存储。
+ℹ️ **数据已持久化**: 使用 SQLite 数据库存储，数据保存在 `bookkeeping.db` 文件中，重启服务不会丢失数据。
 
 ⚠️ **小程序域名配置**: 正式发布需要在微信公众平台配置合法域名。
 
