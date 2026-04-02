@@ -49,14 +49,18 @@ Page({
   },
 
   goToAddTransaction() {
-    wx.navigateTo({
-      url: '/pages/transactions/transactions?action=add'
+    const app = getApp();
+    app.globalData.pendingAction = 'add';
+    wx.switchTab({
+      url: '/pages/transactions/transactions'
     });
   },
 
   goToAddCredit() {
-    wx.navigateTo({
-      url: '/pages/credits/credits?action=add'
+    const app = getApp();
+    app.globalData.pendingAction = 'add';
+    wx.switchTab({
+      url: '/pages/credits/credits'
     });
   }
 })

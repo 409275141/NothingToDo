@@ -20,7 +20,11 @@ Page({
   },
 
   onShow() {
-    if (this.data.currentTab === 'list') {
+    const app = getApp();
+    if (app.globalData.pendingAction === 'add') {
+      app.globalData.pendingAction = null;
+      this.setData({ currentTab: 'add' });
+    } else if (this.data.currentTab === 'list') {
       this.loadCredits();
     }
   },
@@ -78,12 +82,12 @@ Page({
 
   submitCredit() {
     const { formData } = this.data;
-    
+
     if (!formData.customerName) {
       wx.showToast({ title: '请输入客户姓名', icon: 'none' });
       return;
     }
-    
+
     if (!formData.amount || parseFloat(formData.amount) <= 0) {
       wx.showToast({ title: '请输入金额', icon: 'none' });
       return;
@@ -137,11 +141,11 @@ Page({
   recordPayment(e) {
     const creditId = e.currentTarget.dataset.id;
     const credit = this.data.credits.find(c => c.id === creditId);
-    
+
     if (!credit) return;
 
     const remaining = credit.amount - credit.paidAmount;
-    
+
     wx.showModal({
       title: '记录收款',
       editable: true,

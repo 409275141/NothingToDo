@@ -1,7 +1,8 @@
 {
   "description": "简易记账本 - 小微商贩专用",
   "packOptions": {
-    "ignore": []
+    "ignore": [],
+    "include": []
   },
   "setting": {
     "urlCheck": false,
@@ -42,10 +43,18 @@
     "useCompilerPlugins": [
       "typescript",
       "less"
-    ]
+    ],
+    "compileWorklet": false,
+    "localPlugins": false,
+    "condition": false,
+    "swc": false,
+    "disableSWC": true
   },
-  "appid": "wxd1234567890abcde",
+  "appid": "wx54fe0857efc3fd75",
   "libVersion": "2.19.4",
   "projectname": "simple-bookkeeping",
-  "condition": {}
+  "condition": {},
+  "compileType": "miniprogram",
+  "simulatorPluginLibVersion": {},
+  "editorSetting": {}
 }

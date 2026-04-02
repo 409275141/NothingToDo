@@ -21,7 +21,11 @@ Page({
   },
 
   onShow() {
-    if (this.data.currentTab === 'list') {
+    const app = getApp();
+    if (app.globalData.pendingAction === 'add') {
+      app.globalData.pendingAction = null;
+      this.setData({ currentTab: 'add' });
+    } else if (this.data.currentTab === 'list') {
       this.loadTransactions();
     }
   },
@@ -81,7 +85,7 @@ Page({
 
   submitTransaction() {
     const { formData } = this.data;
-    
+
     if (!formData.amount || parseFloat(formData.amount) <= 0) {
       wx.showToast({ title: '请输入金额', icon: 'none' });
       return;

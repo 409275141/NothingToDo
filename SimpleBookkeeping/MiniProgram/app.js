@@ -1,6 +1,7 @@
 App({
   globalData: {
     userId: 'demo',
-    apiUrl: 'http://localhost:5000/api'
+    apiUrl: 'http://miniprogram1.jimteams.top:8080/api',
+    pendingAction: null
   }
 })
