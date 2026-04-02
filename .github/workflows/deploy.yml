@@ -1,0 +1,46 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore SimpleBookkeeping/Api/SimpleBookkeeping.Api.csproj
+
+    - name: Build
+      run: dotnet build SimpleBookkeeping/Api/SimpleBookkeeping.Api.csproj --configuration Release --no-restore
+
+    - name: Publish
+      run: dotnet publish SimpleBookkeeping/Api/SimpleBookkeeping.Api.csproj --configuration Release --no-build --output ./publish
+
+    - name: Setup SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+        chmod 600 ~/.ssh/id_ed25519
+        ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+    - name: Deploy to Server
+      run: |
+        scp -r ./publish/* ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/var/www/simplebookkeeping/
+        ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          cd /var/www/simplebookkeeping
+          # 停止现有服务（根据您的服务管理方式调整）
+          pkill -f "SimpleBookkeeping.Api" || true
+          # 启动服务（根据您的启动方式调整）
+          nohup dotnet SimpleBookkeeping.Api.dll > app.log 2>&1 &
+        EOF

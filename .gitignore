@@ -1,17 +1,13 @@
 ```
-# Docker related
-Dockerfile
-docker-compose.yml
-docker-run.sh
-
 # Logs and temp files
 *.log
 *.tmp
+*.swp
 
 # Environment
 .env
 .env.local
-*.env.*
+.env.*
 
 # Editors
 .vscode/
@@ -19,8 +15,8 @@ docker-run.sh
 
 # Dependencies
 node_modules/
-.venv/
 venv/
+.venv/
 __pycache__/
 .mypy_cache/
 .pytest_cache/
