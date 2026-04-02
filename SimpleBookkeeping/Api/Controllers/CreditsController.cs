@@ -45,7 +45,7 @@ public class CreditsController : ControllerBase
     }
 
     [HttpPost("{id}/payment")]
-    public IActionResult RecordPayment(int id, [FromQuery] string userId = "demo", [FromBody] PaymentRequest request)
+    public IActionResult RecordPayment(int id, [FromQuery] string userId, [FromBody] PaymentRequest request)
     {
         var credit = _context.Credits.Find(id);
         if (credit != null && credit.UserId == userId)
