@@ -35,10 +35,28 @@ jobs:
     - name: Deploy to Server
       run: |
         scp -r ./publish/* ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/var/www/simplebookkeeping/
-        ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
-          cd /var/www/simplebookkeeping
-          # 停止现有服务（根据您的服务管理方式调整）
-          pkill -f "SimpleBookkeeping.Api" || true
-          # 启动服务（根据您的启动方式调整）
-          nohup dotnet SimpleBookkeeping.Api.dll > app.log 2>&1 &
+        ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} 'bash -s' << 'EOF'
+          # 创建 systemd 服务文件
+          sudo tee /etc/systemd/system/simplebookkeeping.service > /dev/null << 'SERVICE'
+          [Unit]
+          Description=SimpleBookkeeping API
+          After=network.target
+          
+          [Service]
+          WorkingDirectory=/var/www/simplebookkeeping
+          ExecStart=/usr/bin/dotnet /var/www/simplebookkeeping/SimpleBookkeeping.Api.dll
+          Restart=always
+          RestartSec=10
+          SyslogIdentifier=simplebookkeeping
+          Environment=ASPNETCORE_ENVIRONMENT=Production
+          Environment=ASPNETCORE_URLS=http://0.0.0.0:8080
+          StandardOutput=append:/var/www/simplebookkeeping/app.log
+          StandardError=append:/var/www/simplebookkeeping/app.log
+          
+          [Install]
+          WantedBy=multi-user.target
+          SERVICE
+          sudo systemctl daemon-reload
+          sudo systemctl enable simplebookkeeping
+          sudo systemctl restart simplebookkeeping
         EOF
