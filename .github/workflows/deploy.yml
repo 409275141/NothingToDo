@@ -34,7 +34,14 @@ jobs:
 
     - name: Deploy to Server
       run: |
+        # 1. 停止服务，释放文件锁
+        ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
+          'sudo systemctl stop simplebookkeeping 2>/dev/null || true'
+
+        # 2. 拷贝新文件（服务已停止，不会锁定）
         scp -r ./publish/* ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/var/www/simplebookkeeping/
+
+        # 3. 更新服务配置并重启
         ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} 'bash -s' << 'EOF'
           # 创建 systemd 服务文件
           sudo tee /etc/systemd/system/simplebookkeeping.service > /dev/null << 'SERVICE'
