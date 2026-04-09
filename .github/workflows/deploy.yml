@@ -38,32 +38,35 @@ jobs:
         ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
           'sudo systemctl stop simplebookkeeping 2>/dev/null || true'
 
-        # 2. 拷贝新文件（服务已停止，不会锁定）
+        # 2. 确保目标目录存在，拷贝新文件
+        ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} \
+          'sudo mkdir -p /var/www/simplebookkeeping && sudo chown -R $USER:$USER /var/www/simplebookkeeping'
         scp -r ./publish/* ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/var/www/simplebookkeeping/
 
         # 3. 更新服务配置并重启
+        # 注意：EOF 和 SERVICE 终结符必须在剥离 YAML 缩进后位于行首（0 列）
+        # YAML run: | 会剥除 8 个空格的基准缩进，因此下方所有行与 EOF 保持相同的 8 空格缩进
         ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} 'bash -s' << 'EOF'
-          # 创建 systemd 服务文件
-          sudo tee /etc/systemd/system/simplebookkeeping.service > /dev/null << 'SERVICE'
-          [Unit]
-          Description=SimpleBookkeeping API
-          After=network.target
-          
-          [Service]
-          WorkingDirectory=/var/www/simplebookkeeping
-          ExecStart=/usr/bin/dotnet /var/www/simplebookkeeping/SimpleBookkeeping.Api.dll
-          Restart=always
-          RestartSec=10
-          SyslogIdentifier=simplebookkeeping
-          Environment=ASPNETCORE_ENVIRONMENT=Production
-          Environment=ASPNETCORE_URLS=http://0.0.0.0:8080
-          StandardOutput=append:/var/www/simplebookkeeping/app.log
-          StandardError=append:/var/www/simplebookkeeping/app.log
-          
-          [Install]
-          WantedBy=multi-user.target
-          SERVICE
-          sudo systemctl daemon-reload
-          sudo systemctl enable simplebookkeeping
-          sudo systemctl restart simplebookkeeping
+        sudo tee /etc/systemd/system/simplebookkeeping.service > /dev/null << 'SERVICE'
+        [Unit]
+        Description=SimpleBookkeeping API
+        After=network.target
+
+        [Service]
+        WorkingDirectory=/var/www/simplebookkeeping
+        ExecStart=/usr/bin/dotnet /var/www/simplebookkeeping/SimpleBookkeeping.Api.dll
+        Restart=always
+        RestartSec=10
+        SyslogIdentifier=simplebookkeeping
+        Environment=ASPNETCORE_ENVIRONMENT=Production
+        Environment=ASPNETCORE_URLS=http://0.0.0.0:8080
+        StandardOutput=append:/var/www/simplebookkeeping/app.log
+        StandardError=append:/var/www/simplebookkeeping/app.log
+
+        [Install]
+        WantedBy=multi-user.target
+        SERVICE
+        sudo systemctl daemon-reload
+        sudo systemctl enable simplebookkeeping
+        sudo systemctl restart simplebookkeeping
         EOF
